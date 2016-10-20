@@ -1,25 +1,25 @@
                           1D Burgers equation pseudo-spectral solver
 
-      														du   1  d               d^2
-      														-- + -- -- (u*u) = nu * ---- (u)
-      														dt   2  dx              dx^2
+				du   1  d               d^2
+				-- + -- -- (u*u) = nu * ---- (u)
+				dt   2  dx              dx^2
 
-	The analytical solution considered is
+The analytical solution considered is
 
-     u(x,t) = 4 - 2 * nu * d/dx(phi(x,t)) / phi(x,0)
+			u(x,t) = 4 - 2 * nu * d/dx(phi(x,t)) / phi(x,0)
 
-	where
+ where
 
-     phi(x,t) = exp(-(x-4*t     ) / (4*nu*(t+1)))
-              + exp(-(x-4*t-2*pi) / (4*nu*(t+1)))
+			phi(x,t) = exp(-(x-4*t     ) / (4*nu*(t+1)))
+				 + exp(-(x-4*t-2*pi) / (4*nu*(t+1)))
 
-	Periodic boundary conditions are considered for a [0,2*pi] domain
+Periodic boundary conditions are considered for a [0,2*pi] domain
 
 			u(0,t) = u(2*pi,t)
 
-  The FFTW3 library is required for the FFT and IFFT transforms.
- 	gfortran command to compile in Ubuntu: $ gfortran burgers1d.f90 -I/usr/include -lfftw3 -o burgers1d
-	Distributed under the GNU GENERAL PUBLIC LICENSE.
+The FFTW3 library is required for the FFT and IFFT transforms.
+The gfortran command to compile in Ubuntu: $ gfortran burgers1d.f90 -I/usr/include -lfftw3 -o burgers1d
+Distributed under the GNU GENERAL PUBLIC LICENSE.
 
-	Author: B. Font Garcia
-	October 2016
+Author: B. Font Garcia
+October 2016
