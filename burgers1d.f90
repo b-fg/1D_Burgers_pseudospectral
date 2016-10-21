@@ -19,7 +19,9 @@
 !			u(0,t) = u(2*pi,t)
 !
 !	The FFTW3 library is required for the FFT and IFFT transforms.
-! gfortran command to compile in Ubuntu: $ gfortran burgers1d.f90 -I/usr/include -lfftw3 -o burgers1d
+! gfortran command to compile in Ubuntu:
+! 	$ gfortran burgers1d.f90 -I/usr/include -lfftw3 -o burgers1d
+!
 ! Distributed under the GNU GENERAL PUBLIC LICENSE.
 !
 ! Author: B. Font Garcia
@@ -34,8 +36,7 @@ contains
 		real*8, intent(in) 		:: u(0:N-1)
 		integer*8, intent(in) :: N
 		complex*16 						:: uk(N/2+1)
-
-		integer*8 	:: planfw
+		integer*8	:: planfw
 
 		call dfftw_plan_dft_r2c_1d(planfw,N,u,uk,FFTW_ESTIMATE)
 		call dfftw_execute_dft_r2c(planfw,u,uk)
@@ -47,7 +48,6 @@ contains
 		complex*16, intent(in):: uk(N/2+1)
 		integer*8, intent(in) :: N
 		real*8								:: u(0:N-1)
-
 		complex*16	:: uk_copy(N/2+1)
 		integer*8 	:: planbw
 
@@ -60,14 +60,14 @@ end module FFTW_helper
 
 module analytical_solution
 	implicit none
-	real*8, parameter			:: pi = 4.*ATAN(1.0d0)
+	real*8, parameter :: pi = 4.*ATAN(1.0d0)
 contains
 	subroutine solution1(u,nu,x,t,N)
-		real*8, intent(in) 	:: x(0:N-1)
-		real*8, intent(in)	:: nu,t
+		real*8, intent(in) 		:: x(0:N-1)
+		real*8, intent(in)		:: nu,t
 		integer*8, intent(in)	:: N
-		real*8, intent(out)	:: u(0:N-1)
-		real*8 :: phi,dphi,a,b,c
+		real*8, intent(out)		:: u(0:N-1)
+		real*8 		:: phi,dphi,a,b,c
 		integer*8	:: j
 
 		do j=0,N-1
@@ -87,15 +87,15 @@ program burgers
 	use analytical_solution
 	implicit none
 	! Definitions
-	complex*16, parameter :: img = (0.d0,1.d0) ! sqrt(-1) value
+	complex*16, parameter :: img = (0.d0,1.d0)	! sqrt(-1) value
 	! Parameters
-	real*8, parameter 		:: xmin = 0.			! left bound of the physical domain
-	real*8, parameter 		:: xmax = 2.*PI		! right bound of the physical domain
-	real*8, parameter 		:: tmax = 0.5			! max real time
-	real*8, parameter 		:: dt = 0.0001		! time step size (careful!)
-	integer*8, parameter 	:: N = 32					! number of grid points (should be base 2)
-	real*8, parameter 		:: nu = 0.5				! viscosity
-	real*8, parameter 		:: rdt = 0.5 			! at each x% of tmax. ie: rdt=50% -> 3 outputs: t= 0,0.5*tmax,tmax
+	real*8, parameter 		:: xmin = 0.					! left bound of the physical domain
+	real*8, parameter 		:: xmax = 2.*PI				! right bound of the physical domain
+	real*8, parameter 		:: tmax = 0.5					! max real time
+	real*8, parameter 		:: dt = 0.0001				! time step size (careful!)
+	integer*8, parameter 	:: N = 32							! number of grid points (should be base 2)
+	real*8, parameter 		:: nu = 0.5						! viscosity
+	real*8, parameter 		:: rdt = 0.5 					! at each x% of tmax. ie: rdt=50% -> 3 outputs: t= 0,0.5*tmax,tmax
 	logical,parameter			:: dealiase = .false.
 	! Useful variables
 	integer*8		:: i,j,k,tdt,idt,it
@@ -148,11 +148,11 @@ program burgers
 		wk = FFT_1d(w,N)
 		! -- 4. Compute convective term (Fourier space)
 		Ck = 0.5*img*kx*wk
-		! Compute the viscous term (spectral)
+		! Compute the viscous term (Fourier space)
 		Vk = -nu*kx*kx*uk
 		! Compute RHS: RHS = viscous term - convective term
 		rhs = Vk-Ck
-		! Dealise [uk and wk]
+		! Dealise (uk, wk)
 		if(dealiase) then
 			do k=0,N/2
 				if(k>=(1./3.)*N) rhs(k) = 0.
@@ -181,7 +181,7 @@ contains
 	! It can be observed the numerical solution at different time steps and compared to the analytical solution at that ouput time.
 	subroutine uxt_output(u,x,t,N)
 		implicit none
-		real*8, intent(in) :: u(0:N-1),x(0:N-1),t
+		real*8, intent(in) 		:: u(0:N-1),x(0:N-1),t
 		integer*8, intent(in) :: N
 		integer :: j
 
@@ -197,12 +197,11 @@ contains
 
 	subroutine uk_output(uk,x,t,N)
 		implicit none
-		complex*16, intent(in) :: uk(N/2+1)
-		real*8, intent(in) :: x(0:N-1),t
-		integer*8, intent(in) :: N
-
-		complex*16 :: uk_copy(N/2+1)
-		integer :: k
+		complex*16, intent(in)	:: uk(N/2+1)
+		real*8, intent(in)			:: x(0:N-1),t
+		integer*8, intent(in)		:: N
+		complex*16	:: uk_copy(N/2+1)
+		integer 		:: k
 		real*8			:: u(0:N-1)
 
 		u = IFFT_1d(uk,N)
@@ -219,10 +218,10 @@ contains
 
 	subroutine k_output(uk,kx,N,file)
 		implicit none
-		complex*16, intent(in) :: uk(N/2+1)
-		real*8, intent(in) :: kx(N/2+1)
-		integer*8, intent(in) :: N
-		character(*),intent(in) :: file
+		complex*16, intent(in)	:: uk(N/2+1)
+		real*8, intent(in) 			:: kx(N/2+1)
+		integer*8, intent(in)		:: N
+		character(*),intent(in)	:: file
 		integer :: k
 
 		open(1,status="replace",file=file,action="write")
