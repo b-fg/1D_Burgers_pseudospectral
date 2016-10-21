@@ -119,12 +119,6 @@ program burgers
 	u = uxt													! -- copy analitycal solution to numerical initial solution
 	! FFT u -> uk
 	uk = FFT_1d(u,N)
-	! Dealiase
-	if(dealiase) then
-		do k=1,N/2+1
-			if(k>=(1./3.)*N) uk(k) = 0.
-		end do
-	end if
 	! Initialise time and iterations
 	t = 0.; it = 0
 	! Initial ouput u = u(x,0) for both analytical and numerical solutions
@@ -141,6 +135,12 @@ program burgers
 	do while(t<tmax)
 		! Compute convective term (pseudo-spectral)
 		! -- 1. IFFT uk -> u
+		! -- Dealiase
+		if(dealiase) then
+			do k=1,N/2+1
+				if(k>=(1./3.)*N) uk(k) = 0.
+			end do
+		end if
 		u = IFFT_1d(uk,N)
 		! -- 2. Compute nonlinear term: w = u*u (Real space)
 		w = u*u
@@ -170,9 +170,18 @@ program burgers
 		end if
 	end do
 
+	! Quick output check
+	! Dealiase
+
+	! if(dealiase) then
+	! 	do k=1,N/2+1
+	! 		if(k>=(1./3.)*N) uk(k) = 0.
+	! 	end do
+	! end if
 	! u = IFFT_1d(uk,N)
 	! print*,x(0),u(0)
 	! print*,x(N-1),u(N-1)
+	
 	write(*,*) 'Work done! No errors.'
 	stop
 
